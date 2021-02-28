@@ -1,2 +1,7 @@
+# Base files to ignore
+GomokuAgentRand/
+gomoku.py
+gomokuAgent.py
+misc.py
 
 .DS_Store
