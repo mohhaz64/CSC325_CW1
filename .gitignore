@@ -14,5 +14,6 @@ misc.py
 .idea/misc.xml
 *.iml
 modules.xml
+vcs.xml
 *.ipr
 .DS_Store
