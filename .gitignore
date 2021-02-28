@@ -11,4 +11,8 @@ misc.py
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/misc.xml
+*.iml
+modules.xml
+*.ipr
 .DS_Store
