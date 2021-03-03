@@ -9,13 +9,21 @@ from gomokuAgent import GomokuAgent
 class Player(GomokuAgent):
     def move(self, board):
         t = time()
+        board_center = self.ID//2
         while True:
-            m, position_x, position_y = self.max(board, 0)
-            move_position = (position_x, position_y)
-            if legalMove(board, move_position):
-                t1 = time()
-                print("Time to do move: ", t1-t)
-                return move_position
+            if self.ID == 1 and board[board_center][board_center] == 0:
+                move_position = (0, 0)
+                if legalMove(board, move_position):
+                    t1 = time()
+                    print("Time to do move: ", t1-t)
+                    return move_position
+            else:
+                m, position_x, position_y = self.max(board, 0)
+                move_position = (position_x, position_y)
+                if legalMove(board, move_position):
+                    t1 = time()
+                    print("Time to do move: ", t1-t)
+                    return move_position
 
     def max(self, board, depth):
         depth += 1
@@ -42,11 +50,13 @@ class Player(GomokuAgent):
                         position_x = i
                         position_y = j
                     board[i][j] = 0
+        print("MAX function returns position X: {} and Y: {} and is in depth --> {}".format(position_x, position_y,
+                                                                                            depth))
         return max_score, position_x, position_y
 
     def min(self, board, depth):
         min_score = 2
-        depth +=1
+        depth += 1
         first_result = winningTest(self.ID, board, self.X_IN_A_LINE)
         second_result = winningTest(-self.ID, board, self.X_IN_A_LINE)
         position_x = None
@@ -69,4 +79,6 @@ class Player(GomokuAgent):
                         position_x = i
                         position_y = j
                     board[i][j] = 0
+        print("MAX function returns position X: {} and Y: {} and is in depth --> {}".format(position_x, position_y,
+                                                                                            depth))
         return min_score, position_x, position_y
