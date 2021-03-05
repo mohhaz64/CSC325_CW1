@@ -1,9 +1,10 @@
 import numpy as np
 from gomokuAgent import GomokuAgent
 
+WIN_SCORE = 100000000
+
 
 def get_set_score(stone_count, open_ends, ai_turn):
-    WIN_SCORE = 100000000
 
     if open_ends == 0 and stone_count < 5:
         return 0
@@ -55,8 +56,20 @@ class Player(GomokuAgent):
         super().__init__(ID, BOARD_SIZE, X_IN_A_LINE)
 
     def move(self, board):
-        # TODO: override move method from GomokuAgent class
-        return ()
+        move = tuple()
+        best_move = self.search_wining_move(board)
+
+        if best_move:
+            move = (best_move[0], best_move[1])
+        else:
+            best_move = self.minimax(board, 3, True)
+            if best_move[1]:
+                move = None
+            else:
+                move[0] = best_move[0]
+                move[1] = best_move[1]
+
+        return move
 
     def eval_row(self, board, ai_turn):
         score = 0
@@ -148,7 +161,6 @@ class Player(GomokuAgent):
         ai_score = 1 if ai_score == 0 else ai_score
         return ai_score / opp_score
 
-
     def gen_possible_moves(self, board):
         possible_moves = set()
         for row in range(self.BOARD_SIZE):
@@ -181,24 +193,50 @@ class Player(GomokuAgent):
 
         return possible_moves
 
-    def end_game(self,):
+    def search_wining_move(self, board):
+        wining_move = []
+        possible_moves = self.gen_possible_moves(board)
+
+        for move in possible_moves:
+            temp_board = [i for i in board]
+            temp_board[move[0]][move[1]] = self.ID
+            if self.get_score(temp_board, True) >= WIN_SCORE:
+                wining_move = move
+                return wining_move
 
     def minimax(self, board, depth, max_player):
-        if depth == 0 or game over in position:
+        if depth == 0:
             return self.eval_board(board, max_player)
 
-        if max_player:
-            max_eval = -np.inf
-            for move in self.gen_possible_moves(board):
-                board[move[0]][move[1]] = self.ID
-                eval = self.minimax(move, depth - 1, False)
-                board[move[0]][move[1]] = 0
-                max_eval = max(max_eval, eval)
-        return max_eval
+        possible_moves = self.gen_possible_moves(board)
 
-        else
-            min_eval = np.inf
-            for move in self.gen_possible_moves(board):
-                eval = minimax(child, depth - 1, True)
-                min_eval = min(minEval, eval)
-            return min_eval
+        if len(possible_moves) == 0:
+            return self.eval_board(board, max_player)
+
+        best_move = [0,0,0]
+
+        if max_player:
+            best_move[0] = -np.inf
+            for move in possible_moves:
+                temp_board = [i for i  in board]
+                temp_board[move[0]][move[1]] = self.ID
+                temp_move = self.minimax(board, depth - 1, False)
+                if temp_move[0] > best_move[0]:
+                    best_move = temp_move
+                    best_move[1] = move[0]
+                    best_move[2] = move[1]
+        else:
+            best_move[0] = np.inf
+            best_move[1] = possible_moves[0][0]
+            best_move[2] = possible_moves[0][1]
+            for move in possible_moves:
+                temp_board = [i for i in board]
+                temp_board[move[0]][move[1]] = self.ID
+                temp_move = self.minimax(board, depth - 1, False)
+                if temp_move[0] < best_move[0]:
+                    best_move = temp_move
+                    best_move[1] = move[0]
+                    best_move[2] = move[1]
+
+        return best_move
+        
