@@ -17,3 +17,4 @@ modules.xml
 vcs.xml
 *.ipr
 .DS_Store
+.idea/inspectionProfiles/profiles_settings.xml
